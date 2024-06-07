@@ -1,6 +1,12 @@
 "use server";
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+
+export interface Recipe {
+  recipeName: string;
+  instructions: string;
+}
+
 export async function getRecipesFromIngredients(ingredients: string) {
   let openAIClient = new OpenAI({
     apiKey: "",
