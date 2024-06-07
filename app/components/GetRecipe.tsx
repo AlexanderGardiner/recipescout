@@ -32,7 +32,9 @@ const GetRecipe = () => {
       }
     }
     console.log(ingredientsIdentified);
-    let recipes = await getRecipesFromIngredients(ingredientsIdentified);
+    let recipes = await getRecipesFromIngredients(
+      JSON.stringify({ ingredients: ingredientsIdentified })
+    );
     console.log(recipes);
     visualizeOutput(file, formattedOutput);
   }
