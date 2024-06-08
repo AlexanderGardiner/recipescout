@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import torch
 print(torch.cuda.is_available())
-model = YOLO("YOLOv8x-worldv2.pt")
+model = YOLO("YOLOv8m-worldv2.pt")
 model.set_classes([
     "salt",
     "sugar",
