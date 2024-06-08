@@ -4,12 +4,18 @@ import * as ort from "onnxruntime-web";
 import { Recipe, getRecipesFromIngredients } from "../actions";
 // set wasm path override
 ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
+interface GetIngredientsProps {
+  ingredients: string[];
+  setIngredients: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-const GetRecipe = () => {
-  let canvas = useRef<HTMLCanvasElement>(null);
+const GetIngredients: React.FC<GetIngredientsProps> = ({
+  ingredients,
+  setIngredients,
+}) => {
+  const [modelRunningTime, setModelRunningTime] = useState<number>(0);
   let imageSize = 640;
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [ingredients, setIngredients] = useState<string[]>([]);
+
   function handleFileInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       getItemsInImage(event.target.files[0]);
@@ -38,15 +44,6 @@ const GetRecipe = () => {
     }
     console.log(ingredientsIdentified);
     setIngredients([...ingredients, ...ingredientsIdentified]);
-    let recipes = await getRecipesFromIngredients(
-      JSON.stringify({ ingredients: ingredientsIdentified })
-    );
-    if (!recipes) {
-      return;
-    }
-
-    setRecipes(JSON.parse(recipes));
-    // visualizeOutput(file, formattedOutput);
   }
 
   async function processInput(
@@ -104,13 +101,18 @@ const GetRecipe = () => {
     if (!input) {
       return;
     }
-
+    const start = performance.now();
     let model = await ort.InferenceSession.create("./YOLOv8m-worldv2.onnx");
+
     let inputTensor = new ort.Tensor(
       Float32Array.from(input),
       [1, 3, 640, 640]
     );
+
     const outputs = await model.run({ images: inputTensor });
+    const end = performance.now();
+
+    setModelRunningTime((end - start) / 1000);
     return outputs["output0"].data;
   }
 
@@ -304,9 +306,9 @@ const GetRecipe = () => {
   ];
 
   return (
-    <div className="w-full grid grid-cols-4 gap-20">
-      <div className="col-span-1 flex justify-start items-start flex-col">
-        <h1 className="text-lg mt-10">Upload Picture of Ingredients:</h1>
+    <div>
+      <h1 className="text-lg mt-10">Upload Picture of Ingredients:</h1>
+      <div className="flex flex-row items-center">
         <input
           type="file"
           accept="image/*"
@@ -314,69 +316,16 @@ const GetRecipe = () => {
           className="file-input bg-neutral text-white w-full max-w-xs mt-2"
           onChange={handleFileInputChange}
         />
-        <h1 className="text-lg mt-10">Selected Ingredients:</h1>
-        <textarea
-          className="textarea bg-neutral text-white max-w-xs w-full mt-2 p-2"
-          value={ingredients.toString()}
-          onChange={(event) => setIngredients(event.target.value.split(", "))}
-        ></textarea>
-        <h1 className="text-lg mt-10">Meal Type:</h1>
-        <select className="bg-neutral text-white select max-w-xs w-full mt-2 p-2">
-          <option value="volvo">Appetizer</option>
-          <option value="volvo">Main</option>
-          <option value="volvo">Side</option>
-          <option value="volvo">Salad</option>
-          <option value="volvo">Snack</option>
-          <option value="volvo">Dessert</option>
-        </select>
-        <h1 className="text-lg mt-10">Prep Time:</h1>
-        <input
-          className="bg-neutral text-white input w-m mt-2 p-1"
-          type="time"
-          min="00:00"
-          max="05:00"
-          defaultValue="00:30"
-        ></input>
-        <h1 className="text-lg mt-10">Diet:</h1>
-        <input
-          className="bg-neutral text-white input max-w-xs w-full mt-2 p-1"
-          type="text"
-        ></input>
-        <button className="bg-neutral text-white btn mt-10">
-          Submit Recipe Parameters
-        </button>
+        <h3 className="m-2 text-2xl">{modelRunningTime + "s"}</h3>
       </div>
-      <div className="col-span-3 flex justify-start items-end flex-col w-full">
-        <table className="table bg-neutral text-white w-full min-w-full border-collapse border border-gray-200 mt-10">
-          <thead>
-            <tr>
-              <th className="border border-gray-200 px-4 py-2 text-white">
-                Recipe Name
-              </th>
-              <th className="border border-gray-200 px-4 py-2 text-white">
-                Instructions
-              </th>
-              <th className="border border-gray-200 px-4 py-2 text-white">
-                Ingredients
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {recipes.map((item) => (
-              <tr key={item.recipeName}>
-                <td className="border border-gray-200 px-4 py-2">
-                  {item.recipeName}
-                </td>
-                <td className="border border-gray-200 px-4 py-2 whitespace-pre-line">
-                  {item.instructions}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <h1 className="text-lg mt-10">Selected Ingredients:</h1>
+      <textarea
+        className="textarea bg-neutral text-white max-w-xs w-full mt-2 p-2"
+        value={ingredients.toString()}
+        onChange={(event) => setIngredients(event.target.value.split(", "))}
+      ></textarea>
     </div>
   );
 };
 
-export default GetRecipe;
+export default GetIngredients;
