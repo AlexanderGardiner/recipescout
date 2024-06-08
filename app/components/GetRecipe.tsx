@@ -8,7 +8,7 @@ ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/";
 const GetRecipe = () => {
   let canvas = useRef<HTMLCanvasElement>(null);
   let imageSize = 640;
-  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   function handleFileInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       getItemsInImage(event.target.files[0]);
@@ -23,7 +23,7 @@ const GetRecipe = () => {
     let input = await processInput(file);
     let output = await runModel(input);
     let formattedOutput = formatOutput(output);
-    let ingredientsIdentified: string[] = ["tomato","potato","carrot","apple"];
+    let ingredientsIdentified: string[] = [];
     if (!formattedOutput) {
       return;
     }
@@ -36,22 +36,12 @@ const GetRecipe = () => {
     let recipes = await getRecipesFromIngredients(
       JSON.stringify({ ingredients: ingredientsIdentified })
     );
-    console.log(JSON.parse(recipes))
-    setRecipes([
-              {
-                  "recipeName": "Vegetable Curry",
-                  "instructions": "1. Peel and chop the potato, carrot, and apple.\n2. Heat some oil in a pan and add the chopped vegetables and apple.\n3. Cook until they start to soften.\n4. Add chopped tomatoes to the pan and stir well.\n5. Season with curry powder, salt, and pepper to taste.\n6. Let it simmer until all the vegetables are cooked through.\n7. Serve the vegetable curry hot over rice or with naan bread."
-              },
-              {
-                  "recipeName": "Potato and Carrot Soup",
-                  "instructions": "1. Peel and chop the potatoes and carrots.\n2. In a large pot, sauté the chopped vegetables in some olive oil.\n3. Add water or vegetable broth to cover the vegetables.\n4. Bring to a boil, then reduce heat and let it simmer until the vegetables are soft.\n5. Use an immersion blender to blend the soup until smooth.\n6. Season with salt and pepper to taste.\n7. Serve the potato and carrot soup hot, optionally garnish with some fresh herbs."
-              },
-              {
-                  "recipeName": "Apple Carrot Salad",
-                  "instructions": "1. Grate the carrots and apples into a bowl.\n2. Add a squeeze of lemon juice to prevent the apples from browning.\n3. Toss the grated carrots and apples together.\n4. For the dressing, mix olive oil, honey, and a pinch of salt in a separate bowl.\n5."}]
-  );
-    // console.log(recipes);
-    //visualizeOutput(file, formattedOutput);
+    if (!recipes) {
+      return;
+    }
+
+    setRecipes(JSON.parse(recipes));
+    visualizeOutput(file, formattedOutput);
   }
 
   async function processInput(
@@ -320,19 +310,28 @@ const GetRecipe = () => {
       <table className="table w-full border-collapse border border-gray-200 mt-10">
         <thead>
           <tr>
-            <th className="border border-gray-200 px-4 py-2 text-white">Recipe Name</th>
-            <th className="border border-gray-200 px-4 py-2 text-white">Instructions</th>
+            <th className="border border-gray-200 px-4 py-2 text-white">
+              Recipe Name
+            </th>
+            <th className="border border-gray-200 px-4 py-2 text-white">
+              Instructions
+            </th>
           </tr>
         </thead>
         <tbody>
           {recipes.map((item) => (
             <tr key={item.recipeName}>
-              <td className="border border-gray-200 px-4 py-2">{item.recipeName}</td>
-              <td className="border border-gray-200 px-4 py-2 whitespace-pre-line">{item.instructions}</td>
+              <td className="border border-gray-200 px-4 py-2">
+                {item.recipeName}
+              </td>
+              <td className="border border-gray-200 px-4 py-2 whitespace-pre-line">
+                {item.instructions}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <canvas ref={canvas}></canvas>
     </div>
   );
 };
