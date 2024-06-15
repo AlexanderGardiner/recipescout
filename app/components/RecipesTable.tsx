@@ -6,8 +6,8 @@ interface RecipesTableProps {
 }
 const RecipesTable: React.FC<RecipesTableProps> = ({ recipes }) => {
   return (
-    <div className="col-span-3 flex justify-start items-end flex-col w-full">
-      <table className="table bg-neutral text-white w-full min-w-full border-collapse border border-gray-200 mt-10">
+    <div className="mt-8 col-span-3 flex justify-start items-center lg:items-end flex-col w-full">
+      <table className="table bg-neutral text-white w-full min-w-full border border-gray-200">
         <thead>
           <tr>
             <th className="border border-gray-200 px-4 py-2 text-white">
@@ -24,11 +24,14 @@ const RecipesTable: React.FC<RecipesTableProps> = ({ recipes }) => {
         <tbody>
           {recipes.map((item) => (
             <tr key={item.recipeName}>
-              <td className="border border-gray-200 px-4 py-2">
+              <td className="border border-gray-200 px-4 py-2 text-white">
                 {item.recipeName}
               </td>
-              <td className="border border-gray-200 px-4 py-2 whitespace-pre-line">
+              <td className="border border-gray-200 px-4 py-2 text-white">
                 {item.instructions}
+              </td>
+              <td className="border border-gray-200 px-4 py-2 text-white">
+                {item.ingredients}
               </td>
             </tr>
           ))}

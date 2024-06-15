@@ -1,5 +1,4 @@
 "use server";
-import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 export async function getRecipesFromIngredients(ingredients: string[]) {
   let openAIClient = new OpenAI({
@@ -22,7 +21,6 @@ export async function getRecipesFromIngredients(ingredients: string[]) {
     ],
     max_tokens: 150,
   });
-  console.log(result);
   return JSON.stringify({
     result: { response: result.choices[0].message.content?.trim() },
   });

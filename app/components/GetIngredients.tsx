@@ -42,7 +42,6 @@ const GetIngredients: React.FC<GetIngredientsProps> = ({
         ingredientsIdentified.push(output.classID);
       }
     }
-    console.log(ingredientsIdentified);
     setIngredients([...ingredients, ...ingredientsIdentified]);
   }
 
@@ -307,7 +306,7 @@ const GetIngredients: React.FC<GetIngredientsProps> = ({
 
   return (
     <div>
-      <h1 className="text-lg mt-10">Upload Picture of Ingredients:</h1>
+      <h1 className="text-lg mt-8">Upload Picture of Ingredients:</h1>
       <div className="flex flex-row items-center">
         <input
           type="file"
