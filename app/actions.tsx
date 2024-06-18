@@ -10,7 +10,7 @@ export interface Recipe {
 
 export async function getRecipesFromIngredients(parameters: string) {
   let openAIClient = new OpenAI({
-    apiKey: "",
+    apiKey: process.env.OPENAI_API_KEY,
   });
   console.log(parameters);
   let result = await openAIClient.chat.completions.create({
