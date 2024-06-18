@@ -9,9 +9,11 @@ export interface Recipe {
 }
 
 export async function getRecipesFromIngredients(parameters: string) {
+  console.log(process.env.OPENAI_API);
   let openAIClient = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API,
   });
+
   console.log(parameters);
   let result = await openAIClient.chat.completions.create({
     model: "gpt-3.5-turbo",
