@@ -45,8 +45,9 @@ export default function Home() {
       ingredients = ingredients + "-" + recipe.ingredients;
     }
     recipeNames = recipeNames.substring(1);
-    instructions = instructions.substring(1);
+    instructions = instructions.substring(1).replaceAll("\n", "%0A");
     ingredients = ingredients.substring(1);
+    console.log(instructions);
     router.push(
       "/viewRecipes?recipeNames=" +
         recipeNames +

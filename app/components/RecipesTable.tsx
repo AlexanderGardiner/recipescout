@@ -24,13 +24,13 @@ const RecipesTable: React.FC<RecipesTableProps> = ({ recipes }) => {
         <tbody>
           {recipes.map((item) => (
             <tr key={item.recipeName}>
-              <td className="border border-gray-200 px-4 py-2 text-white">
+              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
                 {item.recipeName}
               </td>
-              <td className="border border-gray-200 px-4 py-2 text-white">
+              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
                 {item.instructions}
               </td>
-              <td className="border border-gray-200 px-4 py-2 text-white">
+              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
                 {item.ingredients}
               </td>
             </tr>
