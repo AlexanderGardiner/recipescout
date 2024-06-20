@@ -7,8 +7,6 @@ import { useSession } from "next-auth/react";
 export default function MyClientComponent() {
   const { data: session, status } = useSession();
 
-  console.log(status);
-
   return (
     <div>
       <h1>{session?.user?.email}</h1>

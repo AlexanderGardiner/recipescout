@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     );
 
     let { recipeName, instructions, ingredients } = await req.json();
-    let user = await client
+    await client
       .db("main")
       .collection("users")
       .updateOne(

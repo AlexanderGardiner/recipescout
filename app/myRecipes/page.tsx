@@ -1,28 +1,30 @@
-"use client";
+"use server";
 import React, { useState, useEffect } from "react";
 import { Recipe } from "../actions";
 import RecipesTable from "../components/RecipesTable";
 import { headers } from "next/headers";
-const ViewRecipes: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>();
+import { MongoClient } from "mongodb";
+import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth";
 
-  useEffect(() => {
-    fetch("./api/database/getUserRecipes")
-      .then(async (res) => {
-        let recipes = (await res.json()).user.recipes;
-        for (let i = 0; i < recipes.length; i++) {
-          recipes[i].instructions = recipes[i].instructions.replaceAll(
-            "\\n",
-            "\n"
-          );
-        }
-        setRecipes(recipes);
-      })
-      .catch((error) => {
-        console.error("Error fetching recipes:", error);
-      });
-  }, []);
-
+export async function ViewRecipes() {
+  const session = await getServerSession(authOptions);
+  let recipes: Recipe[] = [];
+  if (session) {
+    const client = await MongoClient.connect(
+      process.env.MONGODB_URI as string,
+      {}
+    );
+    let userRecipes = await client
+      .db("main")
+      .collection("users")
+      .findOne(
+        { "user.email": session?.user?.email },
+        { projection: { "user.recipes": 1 } }
+      );
+    recipes = userRecipes?.user.recipes;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-16">
       <h1 className="text-4xl font-bold">My Recipes</h1>
@@ -40,6 +42,6 @@ const ViewRecipes: React.FC = () => {
       </div>
     </main>
   );
-};
+}
 
 export default ViewRecipes;
