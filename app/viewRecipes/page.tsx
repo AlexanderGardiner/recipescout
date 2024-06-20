@@ -29,7 +29,11 @@ export default function ViewRecipes() {
       <h1 className="text-4xl font-bold">Recipes</h1>
 
       <div className="w-full flex flex-col gap-20">
-        <RecipesTable recipes={recipes} />
+        <RecipesTable
+          savingEnabled={true}
+          deletingEnabled={true}
+          recipes={recipes}
+        />
       </div>
     </main>
   );

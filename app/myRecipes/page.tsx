@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getUserRecipes, Recipe } from "../actions";
+import { Recipe } from "../actions";
 import RecipesTable from "../components/RecipesTable";
 import { headers } from "next/headers";
 const ViewRecipes: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>();
 
   useEffect(() => {
     fetch("./api/database/getUserRecipes")
@@ -25,11 +25,15 @@ const ViewRecipes: React.FC = () => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-16">
-      <h1 className="text-4xl font-bold">Recipes</h1>
+      <h1 className="text-4xl font-bold">My Recipes</h1>
       <div className="w-full flex flex-col gap-20">
         {}
-        {recipes.length > 0 ? (
-          <RecipesTable recipes={recipes}></RecipesTable>
+        {recipes != null ? (
+          <RecipesTable
+            recipes={recipes}
+            savingEnabled={false}
+            deletingEnabled={true}
+          ></RecipesTable>
         ) : (
           <p>Loading...</p>
         )}

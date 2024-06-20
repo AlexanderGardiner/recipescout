@@ -111,7 +111,11 @@ export default function Home() {
             Submit Recipe Parameters
           </button>
         </div>
-        <RecipesTable recipes={recipes} />
+        <RecipesTable
+          recipes={recipes}
+          savingEnabled={true}
+          deletingEnabled={false}
+        />
       </div>
     </main>
   );
