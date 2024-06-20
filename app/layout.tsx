@@ -4,6 +4,8 @@ import "./globals.css";
 
 import { getSession } from "@/auth";
 import Providers from "./providers";
+import { useState } from "react";
+import LoginButton from "./components/LoginButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          <LoginButton />
+          {children}
+        </Providers>
       </body>
     </html>
   );

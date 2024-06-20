@@ -9,9 +9,6 @@ const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
-  pages: {
-    signIn: "/signin",
-  },
 };
 
 const getSession = () => getServerSession(authOptions);
