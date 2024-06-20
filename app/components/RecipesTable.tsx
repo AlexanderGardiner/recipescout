@@ -11,7 +11,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
   savingEnabled,
   deletingEnabled,
 }) => {
-  function getRecipeFromTableRow(parentElement: HTMLTableElement) {
+  function getRecipeFromTableRow(parentElement: HTMLTableRowElement) {
     let recipe = { recipeName: "", instructions: "", ingredients: "" };
     let recipeKeys = Object.keys(recipe);
     if (parentElement) {
@@ -24,11 +24,15 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     }
     return recipe;
   }
-  const saveRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const saveSingleRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as HTMLElement;
 
-    const parentElement = targetElement.parentElement?.parentElement;
-    let recipeToSave = getRecipeFromTableRow(parentElement as HTMLTableElement);
+    const tableRow = targetElement.parentElement?.parentElement;
+    saveRecipe(tableRow as HTMLTableRowElement);
+  };
+
+  function saveRecipe(tableRow: HTMLTableRowElement) {
+    let recipeToSave = getRecipeFromTableRow(tableRow);
 
     fetch("./api/database/saveRecipe", {
       method: "POST",
@@ -37,24 +41,59 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
       },
       body: JSON.stringify(recipeToSave),
     });
-  };
+  }
 
-  const deleteRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const deleteSingleRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
     const targetElement = event.target as HTMLElement;
 
-    const parentElement = targetElement.parentElement?.parentElement;
-    let recipeToDelete = getRecipeFromTableRow(
-      parentElement as HTMLTableElement
-    );
-    console.log(recipeToDelete);
-    fetch("./api/database/deleteRecipe", {
+    const tableRow = targetElement.parentElement?.parentElement;
+    deleteRecipe(tableRow as HTMLTableRowElement);
+  };
+
+  async function deleteRecipe(tableRow: HTMLTableRowElement) {
+    let recipeToDelete = getRecipeFromTableRow(tableRow);
+    await fetch("./api/database/deleteRecipe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(recipeToDelete),
     });
+    window.location.reload();
+  }
+
+  const deleteAllRecipes: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const targetElement = event.target as HTMLElement;
+    const table =
+      targetElement.parentElement?.parentElement?.parentElement?.parentElement;
+    if (!table) {
+      return;
+    }
+    let tableBody = table.getElementsByTagName("tbody")[0];
+
+    let tableRows = tableBody.getElementsByTagName("tr");
+
+    for (let i = 0; i < tableRows.length; i++) {
+      deleteRecipe(tableRows[i] as HTMLTableRowElement);
+    }
   };
+
+  const saveAllRecipes: MouseEventHandler<HTMLButtonElement> = (event) => {
+    const targetElement = event.target as HTMLElement;
+    const table =
+      targetElement.parentElement?.parentElement?.parentElement?.parentElement;
+    if (!table) {
+      return;
+    }
+    let tableBody = table.getElementsByTagName("tbody")[0];
+
+    let tableRows = tableBody.getElementsByTagName("tr");
+
+    for (let i = 0; i < tableRows.length; i++) {
+      saveRecipe(tableRows[i] as HTMLTableRowElement);
+    }
+  };
+
   return (
     <div className="mt-8 col-span-3 flex justify-start items-center lg:items-end flex-col w-full">
       <table className="table bg-neutral text-white w-full min-w-full border border-gray-200">
@@ -71,12 +110,12 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
             </th>
             {savingEnabled && (
               <th className="border border-gray-200 px-4 py-2 text-white">
-                Save
+                <button onClick={saveAllRecipes}>Save All</button>
               </th>
             )}
             {deletingEnabled && (
               <th className="border border-gray-200 px-4 py-2 text-white">
-                Delete All
+                <button onClick={deleteAllRecipes}>Delete All</button>
               </th>
             )}
           </tr>
@@ -95,12 +134,12 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
               </td>
               {savingEnabled && (
                 <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                  <button onClick={saveRecipe}>Save</button>
+                  <button onClick={saveSingleRecipe}>Save</button>
                 </td>
               )}
               {deletingEnabled && (
                 <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                  <button onClick={deleteRecipe}>Delete</button>
+                  <button onClick={deleteSingleRecipe}>Delete</button>
                 </td>
               )}
             </tr>
