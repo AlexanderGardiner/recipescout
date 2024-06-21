@@ -25,7 +25,7 @@ export default function Home() {
       return;
     }
     setRecipes(JSON.parse(recipes));
-    if (window.screen.width < 1024) {
+    if (window.screen.width < 768) {
       handleRedirect(JSON.parse(recipes));
     }
   }
@@ -47,7 +47,6 @@ export default function Home() {
     recipeNames = recipeNames.substring(1);
     instructions = instructions.substring(1).replaceAll("\n", "%0A");
     ingredients = ingredients.substring(1);
-    console.log(instructions);
     router.push(
       "/viewRecipes?recipeNames=" +
         recipeNames +

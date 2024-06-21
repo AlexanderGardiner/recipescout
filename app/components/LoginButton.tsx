@@ -10,7 +10,6 @@ export default function LoginButton() {
     e.preventDefault();
     signIn("google");
   };
-  console.log(session);
   return (
     <div>
       {session == null && (
@@ -22,7 +21,7 @@ export default function LoginButton() {
       )}
       {session != null && (
         <div className="flex text-center items-center justify-center absolute right-5 top-5">
-          <h1 className="pr-5">{session?.user?.email}</h1>
+          <h1 className="pr-5 invisible md:visible ">{session?.user?.email}</h1>
           <button
             onClick={function () {
               signOut();

@@ -6,6 +6,7 @@ import { getSession } from "@/auth";
 import Providers from "./providers";
 import { useState } from "react";
 import LoginButton from "./components/LoginButton";
+import Navbar from "./components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers session={session}>
+          <Navbar />
           <LoginButton />
           {children}
         </Providers>

@@ -24,17 +24,20 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     }
     return recipe;
   }
-  const saveSingleRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const saveSingleRecipe: MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
     const targetElement = event.target as HTMLElement;
 
     const tableRow = targetElement.parentElement?.parentElement;
-    saveRecipe(tableRow as HTMLTableRowElement);
+    await saveRecipe(tableRow as HTMLTableRowElement);
+    alert("Saved");
   };
 
-  function saveRecipe(tableRow: HTMLTableRowElement) {
+  async function saveRecipe(tableRow: HTMLTableRowElement) {
     let recipeToSave = getRecipeFromTableRow(tableRow);
 
-    fetch("./api/database/saveRecipe", {
+    await fetch("./api/database/saveRecipe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,11 +46,13 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     });
   }
 
-  const deleteSingleRecipe: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const deleteSingleRecipe: MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
     const targetElement = event.target as HTMLElement;
 
     const tableRow = targetElement.parentElement?.parentElement;
-    deleteRecipe(tableRow as HTMLTableRowElement);
+    await deleteRecipe(tableRow as HTMLTableRowElement);
   };
 
   async function deleteRecipe(tableRow: HTMLTableRowElement) {
@@ -62,7 +67,9 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     window.location.reload();
   }
 
-  const deleteAllRecipes: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const deleteAllRecipes: MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
     const targetElement = event.target as HTMLElement;
     const table =
       targetElement.parentElement?.parentElement?.parentElement?.parentElement;
@@ -74,11 +81,13 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     let tableRows = tableBody.getElementsByTagName("tr");
 
     for (let i = 0; i < tableRows.length; i++) {
-      deleteRecipe(tableRows[i] as HTMLTableRowElement);
+      await deleteRecipe(tableRows[i] as HTMLTableRowElement);
     }
   };
 
-  const saveAllRecipes: MouseEventHandler<HTMLButtonElement> = (event) => {
+  const saveAllRecipes: MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
     const targetElement = event.target as HTMLElement;
     const table =
       targetElement.parentElement?.parentElement?.parentElement?.parentElement;
@@ -90,8 +99,10 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     let tableRows = tableBody.getElementsByTagName("tr");
 
     for (let i = 0; i < tableRows.length; i++) {
-      saveRecipe(tableRows[i] as HTMLTableRowElement);
+      await saveRecipe(tableRows[i] as HTMLTableRowElement);
     }
+
+    alert("Saved");
   };
 
   return (
@@ -109,13 +120,23 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
               Ingredients
             </th>
             {savingEnabled && (
-              <th className="border border-gray-200 px-4 py-2 text-white">
-                <button onClick={saveAllRecipes}>Save All</button>
+              <th className="text-center border border-gray-200 px-4 py-2 text-white">
+                <button
+                  className="btn btn-primary m-0"
+                  onClick={saveAllRecipes}
+                >
+                  Save All
+                </button>
               </th>
             )}
             {deletingEnabled && (
-              <th className="border border-gray-200 px-4 py-2 text-white">
-                <button onClick={deleteAllRecipes}>Delete All</button>
+              <th className="text-center border border-gray-200 px-4 py-2 text-white">
+                <button
+                  className="btn btn-primary m-0"
+                  onClick={deleteAllRecipes}
+                >
+                  Delete All
+                </button>
               </th>
             )}
           </tr>
@@ -133,13 +154,23 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                 {item.ingredients}
               </td>
               {savingEnabled && (
-                <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                  <button onClick={saveSingleRecipe}>Save</button>
+                <td className="text-center border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
+                  <button
+                    className="btn btn-primary m-0"
+                    onClick={saveSingleRecipe}
+                  >
+                    Save
+                  </button>
                 </td>
               )}
               {deletingEnabled && (
-                <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                  <button onClick={deleteSingleRecipe}>Delete</button>
+                <td className="text-center border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
+                  <button
+                    className="btn btn-primary m-0"
+                    onClick={deleteSingleRecipe}
+                  >
+                    Delete
+                  </button>
                 </td>
               )}
             </tr>
