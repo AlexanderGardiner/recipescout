@@ -135,13 +135,13 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
             <th className="border border-gray-200 px-4 py-2 text-white hidden">
               ID
             </th>
-            <th className="border border-gray-200 px-4 py-2 text-white">
+            <th className="border border-gray-200 px-4 py-2 text-lg text-white">
               Recipe Name
             </th>
-            <th className="border border-gray-200 px-4 py-2 text-white">
+            <th className="border border-gray-200 px-4 py-2 text-lg text-white">
               Instructions
             </th>
-            <th className="border border-gray-200 px-4 py-2 text-white">
+            <th className="border border-gray-200 px-4 py-2 text-lg text-white">
               Ingredients
             </th>
             {savingEnabled && (
