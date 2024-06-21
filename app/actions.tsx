@@ -1,5 +1,6 @@
 "use server";
 import OpenAI from "openai";
+import { MongoClient } from "mongodb";
 
 export interface Recipe {
   recipeID: string;
@@ -25,4 +26,25 @@ export async function getRecipesFromIngredients(parameters: string) {
     max_tokens: 1000,
   });
   return result.choices[0].message.content?.trim();
+}
+
+export async function ensureUserExists(
+  mongoClient: MongoClient,
+  userEmail: string
+) {
+  const query = { "user.email": userEmail }; // Replace with the _id to check
+  const update = {
+    $setOnInsert: {
+      user: {
+        email: userEmail,
+        recipes: [], // Assuming this is the structure you want
+      },
+    },
+  };
+  const options = { upsert: true };
+
+  await mongoClient
+    .db("main")
+    .collection("users")
+    .updateOne(query, update, options);
 }
