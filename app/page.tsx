@@ -24,7 +24,12 @@ export default function Home() {
     if (!recipes) {
       return;
     }
-    setRecipes(JSON.parse(recipes));
+    let generatedRecipes = JSON.parse(recipes);
+    for (let i = 0; i < generatedRecipes.length; i++) {
+      generatedRecipes[i].recipeID = crypto.randomUUID();
+    }
+
+    setRecipes(generatedRecipes);
     if (window.screen.width < 768) {
       handleRedirect(JSON.parse(recipes));
     }
@@ -36,29 +41,11 @@ export default function Home() {
   };
 
   const handleRedirect = (recipes: Recipe[]) => {
-    let recipeNames = "";
-    let instructions = "";
-    let ingredients = "";
-    for (let recipe of recipes) {
-      recipeNames = recipeNames + "-" + recipe.recipeName;
-      instructions = instructions + "-" + recipe.instructions;
-      ingredients = ingredients + "-" + recipe.ingredients;
-    }
-    recipeNames = recipeNames.substring(1);
-    instructions = instructions.substring(1).replaceAll("\n", "%0A");
-    ingredients = ingredients.substring(1);
-    router.push(
-      "/viewRecipes?recipeNames=" +
-        recipeNames +
-        "&instructions=" +
-        instructions +
-        "&ingredients=" +
-        ingredients
-    );
+    router.push("/viewRecipes?recipes=" + JSON.stringify(recipes));
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-16">
+    <main className="flex min-h-screen flex-col items-center justify-start p-16 mt-4">
       <h1 className="text-4xl font-bold">Recipe Scout</h1>
 
       <div className="w-full flex flex-col lg:grid lg:grid-cols-4 gap-20">
@@ -114,6 +101,7 @@ export default function Home() {
           recipes={recipes}
           savingEnabled={true}
           deletingEnabled={false}
+          editingAutoUploadEnabled={false}
         />
       </div>
     </main>

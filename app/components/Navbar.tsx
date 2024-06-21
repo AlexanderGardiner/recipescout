@@ -6,7 +6,6 @@ import { useState } from "react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  console.log(usePathname());
   let unselectedStyle =
     "py-2 pl-3 pr-4 text-lg text-primary md:hover:text-neutral-content  md:p-0 dark:text-white md:dark:hover:text-darkHighlight";
   let selectedStyle =

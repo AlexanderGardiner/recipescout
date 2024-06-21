@@ -1,24 +1,31 @@
 "use client";
-import { MouseEventHandler } from "react";
+import { ChangeEvent, ChangeEventHandler, MouseEventHandler } from "react";
 import { Recipe } from "../actions";
 interface RecipesTableProps {
   recipes: Recipe[];
   savingEnabled: boolean;
   deletingEnabled: boolean;
+  editingAutoUploadEnabled: boolean;
 }
 const RecipesTable: React.FC<RecipesTableProps> = ({
   recipes,
   savingEnabled,
   deletingEnabled,
+  editingAutoUploadEnabled,
 }) => {
   function getRecipeFromTableRow(parentElement: HTMLTableRowElement) {
-    let recipe = { recipeName: "", instructions: "", ingredients: "" };
+    let recipe = {
+      recipeID: "",
+      recipeName: "",
+      instructions: "",
+      ingredients: "",
+    };
     let recipeKeys = Object.keys(recipe);
     if (parentElement) {
       let rows = parentElement.getElementsByTagName("td");
 
-      for (let i = 0; i < 3; i++) {
-        let innerHTML = rows[i].innerHTML;
+      for (let i = 0; i < 4; i++) {
+        let innerHTML = rows[i].getElementsByTagName("textarea")[0].value;
         recipe[recipeKeys[i] as keyof typeof recipe] = innerHTML.toString();
       }
     }
@@ -105,11 +112,29 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     alert("Saved");
   };
 
+  const updateRecipe: ChangeEventHandler<HTMLTextAreaElement> = async (
+    event
+  ) => {
+    const targetElement = event.target as HTMLElement;
+    const tableRow = targetElement.parentElement?.parentElement;
+    let recipeToUpdate = getRecipeFromTableRow(tableRow as HTMLTableRowElement);
+    await fetch("./api/database/updateRecipe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(recipeToUpdate),
+    });
+  };
+
   return (
     <div className="mt-8 col-span-3 flex justify-start items-center lg:items-end flex-col w-full">
       <table className="table bg-neutral text-white w-full min-w-full border border-gray-200">
         <thead>
           <tr>
+            <th className="border border-gray-200 px-4 py-2 text-white hidden">
+              ID
+            </th>
             <th className="border border-gray-200 px-4 py-2 text-white">
               Recipe Name
             </th>
@@ -143,15 +168,30 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
         </thead>
         <tbody>
           {recipes.map((item) => (
-            <tr key={item.recipeName}>
-              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                {item.recipeName}
+            <tr key={item.recipeName} className="h-64">
+              <td className="hidden">
+                <textarea defaultValue={item.recipeID}></textarea>
               </td>
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                {item.instructions}
+                <textarea
+                  className="bg-transparent resize-none w-full"
+                  defaultValue={item.recipeName}
+                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                ></textarea>
+              </td>
+              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white min-h-full">
+                <textarea
+                  className="bg-transparent resize-none w-full h-64"
+                  defaultValue={item.instructions}
+                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                ></textarea>
               </td>
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                {item.ingredients}
+                <textarea
+                  className="bg-transparent resize-none w-full"
+                  defaultValue={item.ingredients}
+                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                ></textarea>
               </td>
               {savingEnabled && (
                 <td className="text-center border whitespace-pre-line border-gray-200 px-4 py-2 text-white">

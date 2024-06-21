@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       {}
     );
 
-    let { recipeName, instructions, ingredients } = await req.json();
+    let { recipeID } = await req.json();
 
     await client
       .db("main")
@@ -21,14 +21,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
         {
           $pull: {
             "user.recipes": {
-              recipeName: { $eq: recipeName.toString() },
-              instructions: { $eq: instructions.toString() },
-              ingredients: { $eq: ingredients.toString() },
+              recipeID: { $eq: recipeID.toString() },
             },
           },
         }
       );
-
+    client.close();
     return Response.json(
       {
         message: "Success",

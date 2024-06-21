@@ -16,15 +16,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
       .db("main")
       .collection("users")
       .updateOne(
-        { "user.email": session?.user?.email },
         {
-          $push: {
-            "user.recipes": {
-              recipeID: recipeID.toString(),
-              recipeName: recipeName.toString(),
-              instructions: instructions.toString(),
-              ingredients: ingredients.toString(),
-            },
+          "user.email": session?.user?.email,
+          "user.recipes.recipeID": recipeID.toString(),
+        },
+        {
+          $set: {
+            "user.recipes.$.recipeName": recipeName.toString(),
+            "user.recipes.$.instructions": instructions.toString(),
+            "user.recipes.$.ingredients": ingredients.toString(),
           },
         }
       );

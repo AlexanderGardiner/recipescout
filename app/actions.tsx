@@ -2,6 +2,7 @@
 import OpenAI from "openai";
 
 export interface Recipe {
+  recipeID: string;
   recipeName: string;
   instructions: string;
   ingredients: string;
