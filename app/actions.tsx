@@ -48,3 +48,18 @@ export async function ensureUserExists(
     .collection("users")
     .updateOne(query, update, options);
 }
+
+export async function ensureForumExists(mongoClient: MongoClient) {
+  const query = { posts: { $exists: true } }; // Replace with the _id to check
+  const update = {
+    $setOnInsert: {
+      posts: [],
+    },
+  };
+  const options = { upsert: true };
+
+  await mongoClient
+    .db("main")
+    .collection("forum")
+    .updateOne(query, update, options);
+}
