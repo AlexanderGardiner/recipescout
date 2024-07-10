@@ -28,7 +28,6 @@ export async function ViewForum() {
         return b.time - a.time;
       }
     );
-    console.log(forumPosts);
     client.close();
   }
 
