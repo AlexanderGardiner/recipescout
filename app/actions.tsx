@@ -14,12 +14,14 @@ export interface ForumPost {
   user: string;
   title: string;
   description: string;
+  time: Date;
   comments: ForumComment[];
 }
 
 export interface ForumComment {
   id: string;
   user: string;
+  time: Date;
   text: string;
 }
 

@@ -26,6 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
               title: title,
               description: description,
               user: session?.user?.email,
+              time: Date.now(),
               comments: [],
             },
           },

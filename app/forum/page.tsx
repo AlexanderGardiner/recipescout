@@ -23,7 +23,11 @@ export async function ViewForum() {
       .collection("forum")
       .find({ posts: { $exists: true } })
       .toArray();
-    forumPosts = document[0]?.posts;
+    forumPosts = document[0]?.posts.sort(
+      (a: { time: number }, b: { time: number }) => {
+        return b.time - a.time;
+      }
+    );
     console.log(forumPosts);
     client.close();
   }
