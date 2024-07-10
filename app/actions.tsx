@@ -9,6 +9,20 @@ export interface Recipe {
   ingredients: string;
 }
 
+export interface ForumPost {
+  id: string;
+  user: string;
+  title: string;
+  description: string;
+  comments: ForumComment[];
+}
+
+export interface ForumComment {
+  id: string;
+  user: string;
+  text: string;
+}
+
 export async function getRecipesFromIngredients(parameters: string) {
   let openAIClient = new OpenAI({
     apiKey: process.env.OPENAI_API,

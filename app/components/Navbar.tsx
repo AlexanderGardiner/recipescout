@@ -68,6 +68,28 @@ export default function Navbar() {
                 My Recipes
               </a>
             </li>
+            <li>
+              <a
+                href="/forum"
+                className={
+                  "/forum" == usePathname() ? selectedStyle : unselectedStyle
+                }
+              >
+                Forum
+              </a>
+            </li>
+            <li>
+              <a
+                href="/createForumPost"
+                className={
+                  "/createForumPost" == usePathname()
+                    ? selectedStyle
+                    : unselectedStyle
+                }
+              >
+                Create Forum Post
+              </a>
+            </li>
           </ul>
         </div>
       </div>

@@ -22,6 +22,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         {
           $push: {
             posts: {
+              id: crypto.randomUUID(),
               title: title,
               description: description,
               user: session?.user?.email,
