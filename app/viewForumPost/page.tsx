@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
 import ForumPostViewer from "../components/ForumPostViewer";
 
-export async function ViewForum({
+export default async function ViewForum({
   searchParams,
 }: {
   searchParams: {
@@ -47,5 +47,3 @@ export async function ViewForum({
     </main>
   );
 }
-
-export default ViewForum;
