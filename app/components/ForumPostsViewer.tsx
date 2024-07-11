@@ -1,11 +1,12 @@
 "use client";
 
 import { ForumPost } from "../actions";
-
-interface ForumPostProps {
+import { useRouter } from "next/navigation";
+interface ForumPostsViewerProps {
   forumPosts: ForumPost[];
 }
-const ForumPosts: React.FC<ForumPostProps> = ({ forumPosts }) => {
+const ForumPostsViewer: React.FC<ForumPostsViewerProps> = ({ forumPosts }) => {
+  const router = useRouter();
   return (
     <div className="mt-8 col-span-3 flex justify-start items-center lg:items-end flex-col w-full">
       <table className="table bg-neutral text-white w-full min-w-full border border-gray-200">
@@ -17,12 +18,10 @@ const ForumPosts: React.FC<ForumPostProps> = ({ forumPosts }) => {
             <th className="border border-gray-200 px-4 py-2 text-2xl text-white w-1/4">
               User
             </th>
-            <th className="border border-gray-200 px-4 py-2 text-2xl text-white w-1/4">
+            <th className="border border-gray-200 px-4 py-2 text-2xl text-white w-1/2">
               Title
             </th>
-            <th className="border border-gray-200 px-4 py-2 text-2xl text-white w-1/4">
-              Description
-            </th>
+
             <th className="border border-gray-200 px-4 py-2 text-2xl text-white w-1/4">
               Time Posted
             </th>
@@ -35,7 +34,7 @@ const ForumPosts: React.FC<ForumPostProps> = ({ forumPosts }) => {
               key={post.id}
               className="h-48 max-h-48 cursor-pointer hover:bg-gray-700"
               onClick={() => {
-                console.log("test");
+                router.push("/viewForumPost?postID=" + post.id, {});
               }}
             >
               <td className="hidden">
@@ -47,13 +46,7 @@ const ForumPosts: React.FC<ForumPostProps> = ({ forumPosts }) => {
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-xl text-white min-h-full">
                 <h1 className="bg-transparent w-full">{post.title}</h1>
               </td>
-              <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
-                <textarea
-                  className="bg-transparent w-full h-36"
-                  defaultValue={post.description}
-                  contentEditable={false}
-                ></textarea>
-              </td>
+
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-xl text-white min-h-full">
                 <h1 className="bg-transparent w-full">
                   {new Date(post.time).toLocaleDateString() +
@@ -69,4 +62,4 @@ const ForumPosts: React.FC<ForumPostProps> = ({ forumPosts }) => {
   );
 };
 
-export default ForumPosts;
+export default ForumPostsViewer;

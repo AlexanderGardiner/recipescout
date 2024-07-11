@@ -12,32 +12,27 @@ export async function POST(req: NextRequest, res: NextResponse) {
       {}
     );
 
-    let { title, description } = await req.json();
+    let { postID, text } = await req.json();
+    console.log(text);
+    console.log(postID);
     await ensureForumExists(client);
     await client
       .db("main")
       .collection("forum")
       .updateOne(
-        { posts: { $exists: true } },
+        { posts: { $elemMatch: { id: postID } } },
         {
           $push: {
-            posts: {
+            "posts.$.comments": {
               id: crypto.randomUUID(),
-              title: title,
               user: session?.user?.email,
               time: Date.now(),
-              comments: [
-                {
-                  id: crypto.randomUUID(),
-                  user: session?.user?.email,
-                  time: Date.now(),
-                  text: description,
-                },
-              ],
+              text: text,
             },
           },
         }
       );
+
     client.close();
     return Response.json(
       {

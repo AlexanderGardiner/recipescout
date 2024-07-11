@@ -13,7 +13,6 @@ export interface ForumPost {
   id: string;
   user: string;
   title: string;
-  description: string;
   time: Date;
   comments: ForumComment[];
 }

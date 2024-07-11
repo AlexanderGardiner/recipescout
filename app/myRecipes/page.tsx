@@ -7,8 +7,8 @@ import { MongoClient } from "mongodb";
 import { getSession } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
-
-export async function ViewRecipes() {
+interface ViewRecipesProps {}
+const MyRecipes: React.FC<ViewRecipesProps> = async () => {
   const session = await getServerSession(authOptions);
   let recipes: Recipe[] = [];
   if (session) {
@@ -44,6 +44,6 @@ export async function ViewRecipes() {
       </div>
     </main>
   );
-}
+};
 
-export default ViewRecipes;
+export default MyRecipes;

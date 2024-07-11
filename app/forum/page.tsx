@@ -1,15 +1,11 @@
 "use server";
-import React, { useState, useEffect } from "react";
-import { ensureForumExists, ForumPost, Recipe } from "../actions";
-import RecipesTable from "../components/RecipesTable";
-import { headers } from "next/headers";
-import { MongoClient, WithId, Collection } from "mongodb";
-import { getSession } from "next-auth/react";
+import { ForumPost } from "../actions";
+import { MongoClient } from "mongodb";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
-import ForumPosts from "../components/ForumPosts";
-
-export async function ViewForum() {
+import ForumPostsViewer from "../components/ForumPostsViewer";
+interface ViewForumProps {}
+const ViewForum: React.FC<ViewForumProps> = async () => {
   const session = await getServerSession(authOptions);
   let forumPosts: ForumPost[] = [];
   if (session) {
@@ -37,13 +33,13 @@ export async function ViewForum() {
       <div className="w-full flex flex-col gap-20">
         {}
         {forumPosts.length > 0 ? (
-          <ForumPosts forumPosts={forumPosts}></ForumPosts>
+          <ForumPostsViewer forumPosts={forumPosts}></ForumPostsViewer>
         ) : (
           <p>Loading...</p>
         )}
       </div>
     </main>
   );
-}
+};
 
 export default ViewForum;

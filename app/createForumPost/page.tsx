@@ -1,14 +1,7 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { ensureForumExists, Recipe } from "../actions";
-import RecipesTable from "../components/RecipesTable";
-import { headers } from "next/headers";
-import { MongoClient } from "mongodb";
-import { getSession } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
-
-export async function CreateForumPost() {
+import React, { useRef } from "react";
+interface ForumPostProps {}
+const CreateForumPost: React.FC<ForumPostProps> = () => {
   const postTitle = useRef<HTMLInputElement>(null);
   const postDescription = useRef<HTMLTextAreaElement>(null);
   async function createPost() {
@@ -48,6 +41,6 @@ export async function CreateForumPost() {
       </div>
     </main>
   );
-}
+};
 
 export default CreateForumPost;

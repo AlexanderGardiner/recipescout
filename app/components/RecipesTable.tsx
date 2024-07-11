@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent, ChangeEventHandler, MouseEventHandler } from "react";
 import { Recipe } from "../actions";
+import { useRouter } from "next/navigation";
 interface RecipesTableProps {
   recipes: Recipe[];
   savingEnabled: boolean;
@@ -13,6 +14,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
   deletingEnabled,
   editingAutoUploadEnabled,
 }) => {
+  const router = useRouter();
   function getRecipeFromTableRow(parentElement: HTMLTableRowElement) {
     let recipe = {
       recipeID: "",
@@ -71,7 +73,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
       },
       body: JSON.stringify(recipeToDelete),
     });
-    window.location.reload();
+    router.refresh();
   }
 
   const deleteAllRecipes: MouseEventHandler<HTMLButtonElement> = async (
