@@ -1,9 +1,21 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import InputWithURL from "../components/InputWithURL";
 interface ForumPostProps {}
 const CreateForumPost: React.FC<ForumPostProps> = () => {
   const postTitle = useRef<HTMLInputElement>(null);
   const postDescription = useRef<HTMLTextAreaElement>(null);
+  const searchParams = useSearchParams();
+  const [url, setUrl] = useState("");
+  let recipeID = searchParams.get("recipeID");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUrl(
+        `Link to my recipe: https://${window.location.host}/viewRecipe?recipeID=${recipeID}`
+      );
+    }
+  }, [recipeID]);
   async function createPost() {
     await fetch("./api/database/createForumPost", {
       method: "POST",
@@ -30,10 +42,17 @@ const CreateForumPost: React.FC<ForumPostProps> = () => {
             className="text-xl text-center w-2/5 input bg-secondary-content"
           ></input>
           <h2 className="label text-3xl p-0 m-0">Post Description</h2>
-          <textarea
+          <InputWithURL defaultValue={url}></InputWithURL>
+          {/* <input
             ref={postDescription}
             className="flex-grow w-3/5 p-2 input bg-secondary-content"
-          ></textarea>
+            defaultValue={
+              "Link to my recipe: " +
+              <a>window.location.host</a> +
+              "/viewRecipe?recipeID=" +
+              recipeID
+            }
+          ></input> */}
           <button className="btn btn-primary m-0y" onClick={createPost}>
             Submit
           </button>

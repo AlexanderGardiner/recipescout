@@ -1,6 +1,6 @@
 "use server";
 import React, { useState, useEffect } from "react";
-import { Recipe } from "../actions";
+import { ensureUserExists, Recipe } from "../actions";
 import RecipesTable from "../components/RecipesTable";
 import { headers } from "next/headers";
 import { MongoClient } from "mongodb";
@@ -16,6 +16,7 @@ const MyRecipes: React.FC<ViewRecipesProps> = async () => {
       process.env.MONGODB_URI as string,
       {}
     );
+    await ensureUserExists(client, session?.user?.email as string);
     let userRecipes = await client
       .db("main")
       .collection("users")
@@ -38,6 +39,7 @@ const MyRecipes: React.FC<ViewRecipesProps> = async () => {
             deletingEnabled={true}
             openingEnabled={true}
             visibilityChangeEnabled={true}
+            sharingEnabled={true}
             editingAutoUploadEnabled={true}
           ></RecipesTable>
         ) : (

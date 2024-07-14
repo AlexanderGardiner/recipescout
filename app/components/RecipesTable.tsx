@@ -1,5 +1,10 @@
 "use client";
-import { ChangeEvent, ChangeEventHandler, MouseEventHandler } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  MouseEvent,
+  MouseEventHandler,
+} from "react";
 import { Recipe } from "../actions";
 import { useRouter } from "next/navigation";
 interface RecipesTableProps {
@@ -8,6 +13,7 @@ interface RecipesTableProps {
   deletingEnabled: boolean;
   openingEnabled: boolean;
   visibilityChangeEnabled: boolean;
+  sharingEnabled: boolean;
   editingAutoUploadEnabled: boolean;
 }
 const RecipesTable: React.FC<RecipesTableProps> = ({
@@ -16,6 +22,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
   deletingEnabled,
   openingEnabled,
   visibilityChangeEnabled,
+  sharingEnabled,
   editingAutoUploadEnabled,
 }) => {
   const router = useRouter();
@@ -37,8 +44,11 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
       }
 
       let visibilitySelect = parentElement.getElementsByTagName("select");
-
-      recipe.visibility = visibilitySelect[0].value;
+      if (visibilitySelect[0]) {
+        recipe.visibility = visibilitySelect[0].value;
+      } else {
+        recipe.visibility = "private";
+      }
     }
     return recipe;
   }
@@ -123,11 +133,15 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     alert("Saved");
   };
 
-  const updateRecipe: ChangeEventHandler<
+  const triggerUpdateRecipe: ChangeEventHandler<
     HTMLTextAreaElement | HTMLSelectElement
   > = async (event) => {
     const targetElement = event.target as HTMLElement;
-    const tableRow = targetElement.parentElement?.parentElement;
+    updateRecipe(targetElement);
+  };
+
+  const updateRecipe = async (element: HTMLElement) => {
+    const tableRow = element.parentElement?.parentElement;
     let recipeToUpdate = getRecipeFromTableRow(tableRow as HTMLTableRowElement);
     console.log(recipeToUpdate);
     await fetch("./api/database/updateRecipe", {
@@ -141,6 +155,45 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
 
   function viewRecipe(recipeID: string) {
     router.push("/viewRecipe?recipeID=" + recipeID);
+  }
+
+  async function shareRecipe(
+    event: MouseEvent<HTMLButtonElement>,
+    recipeID: string,
+    visibility: string
+  ) {
+    document.querySelectorAll(".visibilitySelect").forEach((select) => {
+      select.addEventListener("change", function (event) {
+        console.log(
+          "Visibility changed to:",
+          (event.target as HTMLSelectElement).value
+        );
+      });
+    });
+    if (visibility == "private") {
+      if (
+        confirm(
+          "To share a recipe it must be public, do you want to make this recipe public?"
+        )
+      ) {
+        let button = event.target as HTMLButtonElement;
+        let tr = button.parentElement;
+        let visibilitySelect = (
+          tr?.getElementsByClassName("visibilitySelect") as HTMLCollection
+        )[0] as HTMLSelectElement;
+        updateRecipe(visibilitySelect);
+        console.log(visibilitySelect);
+        if (visibilitySelect) {
+          visibilitySelect.value = "public";
+
+          await updateRecipe(visibilitySelect);
+        }
+
+        console.log(visibilitySelect);
+      }
+    }
+
+    router.push("/createForumPost?recipeID=" + recipeID);
   }
 
   return (
@@ -192,7 +245,9 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                 <textarea
                   className="bg-transparent resize-none w-full"
                   defaultValue={item.recipeName}
-                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                  onChange={
+                    editingAutoUploadEnabled ? triggerUpdateRecipe : undefined
+                  }
                 ></textarea>
                 {openingEnabled ? (
                   <button
@@ -208,13 +263,27 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                 )}
                 {visibilityChangeEnabled ? (
                   <select
-                    className="select m-5"
+                    className="select m-5 visibilitySelect"
                     defaultValue={item.visibility}
-                    onChange={updateRecipe}
+                    onChange={
+                      editingAutoUploadEnabled ? triggerUpdateRecipe : undefined
+                    }
                   >
                     <option value="private">Private</option>
                     <option value="public">Public</option>
                   </select>
+                ) : (
+                  ""
+                )}
+                {sharingEnabled ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={function (event: MouseEvent<HTMLButtonElement>) {
+                      shareRecipe(event, item.recipeID, item.visibility);
+                    }}
+                  >
+                    Share
+                  </button>
                 ) : (
                   ""
                 )}
@@ -223,14 +292,18 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                 <textarea
                   className="bg-transparent resize-none w-full h-64"
                   defaultValue={item.instructions}
-                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                  onChange={
+                    editingAutoUploadEnabled ? triggerUpdateRecipe : undefined
+                  }
                 ></textarea>
               </td>
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white">
                 <textarea
                   className="bg-transparent resize-none w-full"
                   defaultValue={item.ingredients}
-                  onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
+                  onChange={
+                    editingAutoUploadEnabled ? triggerUpdateRecipe : undefined
+                  }
                 ></textarea>
               </td>
               {savingEnabled && (
