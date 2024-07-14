@@ -26,6 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
               recipeName: recipeName.toString(),
               instructions: instructions.toString(),
               ingredients: ingredients.toString(),
+              visibility: "private",
             },
           },
         }

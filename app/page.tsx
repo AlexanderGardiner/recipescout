@@ -100,6 +100,7 @@ export default function Home() {
         <RecipesTable
           recipes={recipes}
           savingEnabled={true}
+          openingEnabled={false}
           deletingEnabled={false}
           editingAutoUploadEnabled={false}
         />

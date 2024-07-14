@@ -6,12 +6,14 @@ interface RecipesTableProps {
   recipes: Recipe[];
   savingEnabled: boolean;
   deletingEnabled: boolean;
+  openingEnabled: boolean;
   editingAutoUploadEnabled: boolean;
 }
 const RecipesTable: React.FC<RecipesTableProps> = ({
   recipes,
   savingEnabled,
   deletingEnabled,
+  openingEnabled,
   editingAutoUploadEnabled,
 }) => {
   const router = useRouter();
@@ -129,6 +131,10 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     });
   };
 
+  function viewRecipe(recipeID: string) {
+    router.push("/viewRecipe?recipeID=" + recipeID);
+  }
+
   return (
     <div className="mt-8 col-span-3 flex justify-start items-center lg:items-end flex-col w-full">
       <table className="table bg-neutral text-white w-full min-w-full border border-gray-200">
@@ -180,6 +186,18 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                   defaultValue={item.recipeName}
                   onChange={editingAutoUploadEnabled ? updateRecipe : undefined}
                 ></textarea>
+                {openingEnabled ? (
+                  <button
+                    className="btn btn-primary"
+                    onClick={function () {
+                      viewRecipe(item.recipeID);
+                    }}
+                  >
+                    Open Recipe
+                  </button>
+                ) : (
+                  ""
+                )}
               </td>
               <td className="border whitespace-pre-line border-gray-200 px-4 py-2 text-white min-h-full">
                 <textarea

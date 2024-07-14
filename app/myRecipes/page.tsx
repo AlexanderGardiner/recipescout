@@ -36,6 +36,7 @@ const MyRecipes: React.FC<ViewRecipesProps> = async () => {
             recipes={recipes}
             savingEnabled={false}
             deletingEnabled={true}
+            openingEnabled={true}
             editingAutoUploadEnabled={true}
           ></RecipesTable>
         ) : (

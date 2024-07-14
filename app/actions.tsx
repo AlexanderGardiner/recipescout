@@ -47,12 +47,13 @@ export async function ensureUserExists(
   mongoClient: MongoClient,
   userEmail: string
 ) {
-  const query = { "user.email": userEmail }; // Replace with the _id to check
+  const query = { "user.email": userEmail };
   const update = {
     $setOnInsert: {
       user: {
         email: userEmail,
-        recipes: [], // Assuming this is the structure you want
+        userID: crypto.randomUUID(),
+        recipes: [],
       },
     },
   };
@@ -65,7 +66,7 @@ export async function ensureUserExists(
 }
 
 export async function ensureForumExists(mongoClient: MongoClient) {
-  const query = { posts: { $exists: true } }; // Replace with the _id to check
+  const query = { posts: { $exists: true } };
   const update = {
     $setOnInsert: {
       posts: [],
