@@ -102,6 +102,7 @@ export default function Home() {
           savingEnabled={true}
           openingEnabled={false}
           deletingEnabled={false}
+          visibilityChangeEnabled={false}
           editingAutoUploadEnabled={false}
         />
       </div>

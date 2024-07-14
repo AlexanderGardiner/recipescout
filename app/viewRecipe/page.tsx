@@ -17,6 +17,7 @@ export default async function ViewRecipes({
     recipeName: "",
     instructions: "",
     ingredients: "",
+    visibility: "private",
   };
   if (searchParams.recipeID) {
     const session = await getServerSession(authOptions);

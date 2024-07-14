@@ -7,6 +7,7 @@ interface RecipesTableProps {
   savingEnabled: boolean;
   deletingEnabled: boolean;
   openingEnabled: boolean;
+  visibilityChangeEnabled: boolean;
   editingAutoUploadEnabled: boolean;
 }
 const RecipesTable: React.FC<RecipesTableProps> = ({
@@ -14,6 +15,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
   savingEnabled,
   deletingEnabled,
   openingEnabled,
+  visibilityChangeEnabled,
   editingAutoUploadEnabled,
 }) => {
   const router = useRouter();
@@ -23,6 +25,7 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
       recipeName: "",
       instructions: "",
       ingredients: "",
+      visibility: "private",
     };
     let recipeKeys = Object.keys(recipe);
     if (parentElement) {
@@ -32,6 +35,10 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
         let innerHTML = rows[i].getElementsByTagName("textarea")[0].value;
         recipe[recipeKeys[i] as keyof typeof recipe] = innerHTML.toString();
       }
+
+      let visibilitySelect = parentElement.getElementsByTagName("select");
+
+      recipe.visibility = visibilitySelect[0].value;
     }
     return recipe;
   }
@@ -116,12 +123,13 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
     alert("Saved");
   };
 
-  const updateRecipe: ChangeEventHandler<HTMLTextAreaElement> = async (
-    event
-  ) => {
+  const updateRecipe: ChangeEventHandler<
+    HTMLTextAreaElement | HTMLSelectElement
+  > = async (event) => {
     const targetElement = event.target as HTMLElement;
     const tableRow = targetElement.parentElement?.parentElement;
     let recipeToUpdate = getRecipeFromTableRow(tableRow as HTMLTableRowElement);
+    console.log(recipeToUpdate);
     await fetch("./api/database/updateRecipe", {
       method: "POST",
       headers: {
@@ -195,6 +203,18 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
                   >
                     Open Recipe
                   </button>
+                ) : (
+                  ""
+                )}
+                {visibilityChangeEnabled ? (
+                  <select
+                    className="select m-5"
+                    defaultValue={item.visibility}
+                    onChange={updateRecipe}
+                  >
+                    <option value="private">Private</option>
+                    <option value="public">Public</option>
+                  </select>
                 ) : (
                   ""
                 )}

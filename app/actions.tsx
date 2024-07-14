@@ -7,6 +7,7 @@ export interface Recipe {
   recipeName: string;
   instructions: string;
   ingredients: string;
+  visibility: string;
 }
 
 export interface ForumPost {

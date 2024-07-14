@@ -12,7 +12,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       {}
     );
 
-    let { recipeName, instructions, ingredients, recipeID } = await req.json();
+    let { recipeName, instructions, ingredients, recipeID, visibility } =
+      await req.json();
     await ensureUserExists(client, session?.user?.email as string);
     await client
       .db("main")
@@ -27,6 +28,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             "user.recipes.$.recipeName": recipeName.toString(),
             "user.recipes.$.instructions": instructions.toString(),
             "user.recipes.$.ingredients": ingredients.toString(),
+            "user.recipes.$.visibility": visibility.toString(),
           },
         }
       );
