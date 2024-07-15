@@ -16,9 +16,28 @@ const ForumCommentViewer: React.FC<ForumCommentProps> = ({ forumComment }) => {
             new Date(forumComment.time).toLocaleTimeString()}
         </p>
         <h2 className="text-2xl">{forumComment.user}</h2>
-        <p className="w-full">{forumComment.text}</p>
+        <p className="w-full">{urlify(forumComment.text)}</p>
       </div>
     </div>
+  );
+};
+
+const urlify = (text: string) => {
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlPattern).map((part, index) =>
+    urlPattern.test(part) ? (
+      <a
+        key={index}
+        href={part}
+        className="text-blue-500 underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
   );
 };
 

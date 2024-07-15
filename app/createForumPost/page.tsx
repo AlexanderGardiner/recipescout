@@ -5,13 +5,12 @@ import InputWithURL from "../components/InputWithURL";
 interface ForumPostProps {}
 const CreateForumPost: React.FC<ForumPostProps> = () => {
   const postTitle = useRef<HTMLInputElement>(null);
-  const postDescription = useRef<HTMLTextAreaElement>(null);
+  const [postDescription, setPostDescription] = useState("");
   const searchParams = useSearchParams();
-  const [url, setUrl] = useState("");
   let recipeID = searchParams.get("recipeID");
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUrl(
+    if (typeof window !== "undefined" && recipeID != null) {
+      setPostDescription(
         `Link to my recipe: https://${window.location.host}/viewRecipe?recipeID=${recipeID}`
       );
     }
@@ -24,7 +23,7 @@ const CreateForumPost: React.FC<ForumPostProps> = () => {
       },
       body: JSON.stringify({
         title: postTitle.current!.value,
-        description: postDescription.current!.value,
+        description: postDescription,
       }),
     });
 
@@ -42,17 +41,10 @@ const CreateForumPost: React.FC<ForumPostProps> = () => {
             className="text-xl text-center w-2/5 input bg-secondary-content"
           ></input>
           <h2 className="label text-3xl p-0 m-0">Post Description</h2>
-          <InputWithURL defaultValue={url}></InputWithURL>
-          {/* <input
-            ref={postDescription}
-            className="flex-grow w-3/5 p-2 input bg-secondary-content"
-            defaultValue={
-              "Link to my recipe: " +
-              <a>window.location.host</a> +
-              "/viewRecipe?recipeID=" +
-              recipeID
-            }
-          ></input> */}
+          <InputWithURL
+            outputText={postDescription}
+            setOutputText={setPostDescription}
+          ></InputWithURL>
           <button className="btn btn-primary m-0y" onClick={createPost}>
             Submit
           </button>
