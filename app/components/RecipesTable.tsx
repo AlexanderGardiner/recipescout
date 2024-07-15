@@ -181,7 +181,6 @@ const RecipesTable: React.FC<RecipesTableProps> = ({
         let visibilitySelect = (
           tr?.getElementsByClassName("visibilitySelect") as HTMLCollection
         )[0] as HTMLSelectElement;
-        updateRecipe(visibilitySelect);
         console.log(visibilitySelect);
         if (visibilitySelect) {
           visibilitySelect.value = "public";
